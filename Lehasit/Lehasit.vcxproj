@@ -89,6 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;LEHASIT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,18 +144,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cheats.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="hooks.h" />
+    <ClInclude Include="Interfaces.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="Offsets.h" />
+    <ClInclude Include="sdk\buttons.h" />
+    <ClInclude Include="sdk\CBaseCombatWeapon.h" />
+    <ClInclude Include="sdk\CBaseEntity.h" />
+    <ClInclude Include="sdk\CGlobalVarsBase.h" />
+    <ClInclude Include="sdk\CUserCmd.h" />
+    <ClInclude Include="sdk\IMoveHelper.h" />
+    <ClInclude Include="sdk\mathlib.h" />
+    <ClInclude Include="sdk\network.h" />
+    <ClInclude Include="sdk\QAngle.h" />
+    <ClInclude Include="sdk\Recv.h" />
+    <ClInclude Include="sdk\studio.h" />
+    <ClInclude Include="sdk\tf.h" />
+    <ClInclude Include="sdk\trace.h" />
+    <ClInclude Include="sdk\Vector.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="utils\draw.h" />
+    <ClInclude Include="utils\hack.h" />
+    <ClInclude Include="utils\memory.h" />
+    <ClInclude Include="utils\recv.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="airblast.cpp" />
+    <ClCompile Include="config.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="glow.cpp" />
+    <ClCompile Include="hooks.cpp" />
+    <ClCompile Include="Interfaces.cpp" />
     <ClCompile Include="Lehasit.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="Offsets.cpp" />
+    <ClCompile Include="prediction.cpp" />
+    <ClCompile Include="sdk\mathlib.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="utils\draw.cpp" />
+    <ClCompile Include="utils\hack.cpp" />
+    <ClCompile Include="utils\memory.cpp" />
+    <ClCompile Include="utils\recv.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
