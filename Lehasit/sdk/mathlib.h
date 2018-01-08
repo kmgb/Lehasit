@@ -1,11 +1,9 @@
 #pragma once
 
-// Credits: Valve
+#include <cmath>
 
 #include "Vector.h"
 #include "QAngle.h"
-
-#include <cmath>
 
 #define M_PI 3.14159265358979323846f
 #define DEG2RAD(x) ((float)(x) * (M_PI / 180.f))

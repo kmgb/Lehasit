@@ -11,23 +11,6 @@
 #include "sdk/network.h"
 #include "sdk/mathlib.h"
 
-// Return the extrapolated position of a player after the current latency
-/*Vector LatencyOffset(CTFPlayer* pPlayer, int* numticks = nullptr)
-{
-	Vector vel;
-	pPlayer->EstimateAbsVelocity(vel);
-
-	auto netinfo = g_interfaces.engine->GetNetChannelInfo();
-	float latency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING);
-
-	if (numticks)
-	{
-		*numticks = (int)(latency / g_pGlobals->interval_per_tick);
-	}
-
-	return vel*latency;
-}*/
-
 std::vector<CBaseEntity*> GetDeflectableProjectiles(CTFPlayer* pLocalPlayer)
 {
 	std::vector<CBaseEntity*> result;
@@ -82,6 +65,7 @@ void airblast::Run(CUserCmd* pCmd)
 	// Store default angles for later movement fixing
 	QAngle oldAngles = pCmd->viewangles;
 
+	// Spike if possible, airblast angles will overwrite these ones if needed
 	switch (g_config.airblast_spike_type)
 	{
 		case SPIKE_NONE:
@@ -164,9 +148,6 @@ void airblast::Run(CUserCmd* pCmd)
 			closestPredictedCenter = predictpos;
 		}
 	}
-
-	if (!pClosestProjectile)
-		return;
 
 	if (pClosestProjectile && closestDistance <= 185)
 	{
