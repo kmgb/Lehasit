@@ -21,69 +21,75 @@ enum SpikeType
 	SPIKE_RIGHT
 };
 
-void airblast::Run(CUserCmd* pCmd)
+bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles)
 {
 	static QAngle lastAirblastAngle = { 0, 0, 0 };
+	static bool didAirblastLastRound = false;
 
 	if (!g_config.airblast_enable)
-		return;
+		return false;
 
 	// Store default angles for later movement fixing
 	QAngle oldAngles = pCmd->viewangles;
 
 	// Spike if possible, airblast angles will overwrite these ones if needed
-	switch (g_config.airblast_spike_type)
+	if (didAirblastLastRound)
 	{
-		case SPIKE_NONE:
-			pCmd->viewangles = lastAirblastAngle;
-			break;
+		switch (g_config.airblast_spike_type)
+		{
+			case SPIKE_NONE:
+				pCmd->viewangles = lastAirblastAngle;
+				break;
 
-		case SPIKE_MANUAL:
-			break;
+			case SPIKE_MANUAL:
+				break;
 
-		case SPIKE_UP:
-			pCmd->viewangles[PITCH] = -89;
-			pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
-			break;
+			case SPIKE_UP:
+				pCmd->viewangles[PITCH] = -89;
+				pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
+				break;
 
-		case SPIKE_DOWN:
-			pCmd->viewangles[PITCH] = 89;
-			pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
-			break;
+			case SPIKE_DOWN:
+				pCmd->viewangles[PITCH] = 89;
+				pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
+				break;
 
-		case SPIKE_LEFT:
-			pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
-			pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
-			break;
+			case SPIKE_LEFT:
+				pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
+				pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
+				break;
 
-		case SPIKE_RIGHT:
-			pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
-			pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
-			break;
+			case SPIKE_RIGHT:
+				pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
+				pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
+				break;
+		}
+
+		utils::MovementFix(pCmd, oldAngles);
+
+		didAirblastLastRound = false;
+		return true;
 	}
-
-	utils::MovementFix(pCmd, oldAngles);
 
 	CTFPlayer* pLocalPlayer = utils::GetLocalPlayer();
 
 	if (pLocalPlayer->getLifestate() != LIFE_ALIVE)
-		return;
+		return false;
 
-	bool canAirblast = false;
 	CBaseCombatWeapon* pWeapon = pLocalPlayer->getActiveWeapon();
 	// No weapon
 	if (!pWeapon)
-		return;
+		return false;
 
 	// Not a flamethrower
 	if (strcmp(pWeapon->get_client_class()->name, "CTFFlameThrower") != 0)
-		return;
+		return false;
 
 	// Can't airblast now
 	if (pWeapon->getNextSecondaryAttackTime() > g_pGlobals->curtime)
 	{
 		pCmd->buttons &= ~IN_ATTACK2;
-		return;
+		return false;
 	}
 
 	// Default tf2 doesn't need special lag compensation
@@ -99,7 +105,7 @@ void airblast::Run(CUserCmd* pCmd)
 	CBaseEntity* pClosestProjectile{};
 	Vector closestPredictedCenter;
 	float closestDistance = -1337.f;
-	for (CBaseEntity* pProjectile : GetDeflectableProjectiles(pLocalPlayer))
+	for (CBaseEntity* pProjectile : deflectableProjectiles)
 	{
 		Vector vel;
 		pProjectile->EstimateAbsVelocity(vel);
@@ -123,5 +129,10 @@ void airblast::Run(CUserCmd* pCmd)
 		pCmd->buttons |= IN_ATTACK2;
 
 		lastAirblastAngle = pCmd->viewangles;
+		didAirblastLastRound = true;
+
+		return true;
 	}
+
+	return false;
 }

@@ -10,12 +10,12 @@ std::vector<CBaseEntity*> GetDeflectableProjectiles(CTFPlayer* pLocalPlayer);
 
 namespace airblast
 {
-	void Run(CUserCmd* pCmd);
+	bool Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles);
 }
 
 namespace orbit
 {
-	void Run(CUserCmd* pCmd);
+	void Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles);
 }
 
 namespace glow

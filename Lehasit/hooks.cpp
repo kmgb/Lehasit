@@ -72,11 +72,17 @@ bool __fastcall New_CreateMove(IClientMode* this_, int edx, float inputSampleTim
 		*OffsetPointer<int>(pLocalPlayer, g_offsets.TFPlayer.m_nForceTauntCam) = 0;
 	}
 
-	prediction::Apply(pCmd);
+	if (pLocalPlayer->getLifestate() == LIFE_ALIVE)
+	{
+		prediction::Apply(pCmd);
 
-	airblast::Run(pCmd);
+		std::vector<CBaseEntity*> deflectableProjectiles = GetDeflectableProjectiles(pLocalPlayer);
 
-	prediction::Restore();
+		if (!airblast::Run(pCmd, deflectableProjectiles))
+			orbit::Run(pCmd, deflectableProjectiles);
+
+		prediction::Restore();
+	}
 
 	return false; // Returning true calls SetViewAngles(cmd->viewangles), which we want the aimbot to be able to decide
 }

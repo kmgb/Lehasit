@@ -117,6 +117,7 @@ CheatMenu::CheatMenu()
 	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemBool("Auto airblast", &g_config.airblast_enable)));
 	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemBool("- TFDB lag fix", &g_config.airblast_tfdb_lagfix)));
 	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemString<6>("- TFDB spike type", &g_config.airblast_spike_type, g_config.airblast_spikeTypeText)));
+	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemBool("TFDB orbit", &g_config.airblast_tfdb_orbit_enable)));
 	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemString<3>("Glow", &g_config.glow_type, g_config.glow_typeText)));
 	m_items.push_back(std::unique_ptr<IMenuItem>(new MenuItemBool("Force thirdperson", &g_config.thirdperson_enable)));
 

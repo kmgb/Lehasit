@@ -70,29 +70,4 @@ void AngleVectors(const QAngle& angles, Vector* forward, Vector* right, Vector* 
 	}
 }*/
 
-/*void VectorAngles(const Vector& forward, QAngle& angles) {
-	float tmp, yaw, pitch;
-
-	if (forward.x == 0.f && forward.y == 0.f) {
-		yaw = 0.f;
-		if (forward.z > 0.f) {
-			pitch = 270.f;
-		} else {
-			pitch = 90.f;
-		}
-	} else {
-		yaw = RAD2DEG(atan2f(forward.y, forward.x));
-		if (yaw < 0.f)
-			yaw += 360.f;
-
-		tmp = forward.length2D();
-		pitch = RAD2DEG(atan2f(-forward.z, tmp));
-
-		if (pitch < 0.f)
-			pitch += 360.f;
-	}
-
-	angles[PITCH] = pitch;
-	angles[YAW] = yaw;
-	angles[ROLL] = 0.f;
-}*/
+void VectorAngles(const Vector& forward, QAngle& angles);
