@@ -149,5 +149,11 @@
     <ClCompile Include="airblast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="orbit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
