@@ -127,7 +127,7 @@ void airblast::Run(CUserCmd* pCmd)
 	if (g_config.airblast_tfdb_lagfix)
 	{
 		auto netinfo = g_interfaces.engine->GetNetChannelInfo();
-		latency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING);
+		latency = netinfo->GetLatency(MAX_FLOWS); // Get incoming and outgoing latency
 	}
 
 	CBaseEntity* pClosestProjectile{};
