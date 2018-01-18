@@ -124,11 +124,11 @@ bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectil
 	if (pClosestProjectile && closestDistance <= 185)
 	{
 		QAngle angles = utils::CalculateAngle(utils::GetLocalViewOrigin(), closestPredictedCenter);
-		cmd->viewangles = angles;
+		cmd.viewangles = angles;
 		utils::MovementFix(cmd, oldAngles);
-		cmd->buttons |= IN_ATTACK2;
+		cmd.buttons |= IN_ATTACK2;
 
-		lastAirblastAngle = cmd->viewangles;
+		lastAirblastAngle = cmd.viewangles;
 		didAirblastLastRound = true;
 
 		return true;
