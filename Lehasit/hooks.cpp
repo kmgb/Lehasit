@@ -56,12 +56,19 @@ bool __fastcall New_CreateMove(IClientMode* this_, int edx, float inputSampleTim
 {
 	bool returnValue = Original_CreateMove(this_, inputSampleTime, pCmd);
 
-	if (pCmd->command_number == 0) // Ignore call from CInput::ExtraMouseSample
+	if (!pCmd) // Should never be null
+		return returnValue;
+
+	CUserCmd& cmd = *pCmd;
+
+	if (cmd.command_number == 0) // Ignore call from CInput::ExtraMouseSample
 		return returnValue;
 
 	CTFPlayer* pLocalPlayer = utils::GetLocalPlayer();
 	if (!pLocalPlayer)
 		return false;
+
+	CTFPlayer& localPlayer = *pLocalPlayer;
 
 	if (g_config.thirdperson_enable)
 	{
@@ -74,12 +81,12 @@ bool __fastcall New_CreateMove(IClientMode* this_, int edx, float inputSampleTim
 
 	if (pLocalPlayer->getLifestate() == LIFE_ALIVE)
 	{
-		prediction::Apply(pCmd);
+		prediction::Apply(cmd);
 
-		std::vector<CBaseEntity*> deflectableProjectiles = GetDeflectableProjectiles(pLocalPlayer);
+		std::vector<CBaseEntity*> deflectableProjectiles = GetDeflectableProjectiles(localPlayer);
 
-		if (!airblast::Run(pCmd, deflectableProjectiles))
-			orbit::Run(pCmd, deflectableProjectiles);
+		if (!airblast::Run(cmd, deflectableProjectiles))
+			orbit::Run(cmd, deflectableProjectiles);
 
 		prediction::Restore();
 	}

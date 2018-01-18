@@ -7,7 +7,7 @@
 #include "sdk/network.h"
 #include "sdk\CUserCmd.h"
 
-void orbit::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles)
+void orbit::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles)
 {
 	if (!g_config.airblast_tfdb_orbit_enable)
 		return;
@@ -39,7 +39,7 @@ void orbit::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles
 
 	Vector perpendicular_hvel = Vector(vel.y, -vel.x, 0);
 
-	VectorAngles(perpendicular_hvel, pCmd->viewangles);
-	pCmd->forwardmove = 450.f;
-	pCmd->sidemove = 0.f;
+	VectorAngles(perpendicular_hvel, cmd.viewangles);
+	cmd.forwardmove = 450.f;
+	cmd.sidemove = 0.f;
 }

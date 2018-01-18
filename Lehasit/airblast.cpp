@@ -21,7 +21,7 @@ enum SpikeType
 	SPIKE_RIGHT
 };
 
-bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles)
+bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles)
 {
 	static QAngle lastAirblastAngle = { 0, 0, 0 };
 	static bool didAirblastLastRound = false;
@@ -30,7 +30,7 @@ bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjecti
 		return false;
 
 	// Store default angles for later movement fixing
-	QAngle oldAngles = pCmd->viewangles;
+	QAngle oldAngles = cmd.viewangles;
 
 	// Spike if possible, airblast angles will overwrite these ones if needed
 	if (didAirblastLastRound)
@@ -38,34 +38,34 @@ bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjecti
 		switch (g_config.airblast_spike_type)
 		{
 			case SPIKE_NONE:
-				pCmd->viewangles = lastAirblastAngle;
+				cmd.viewangles = lastAirblastAngle;
 				break;
 
 			case SPIKE_MANUAL:
 				break;
 
 			case SPIKE_UP:
-				pCmd->viewangles[PITCH] = -89;
-				pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
+				cmd.viewangles[PITCH] = -89;
+				cmd.viewangles[YAW] = lastAirblastAngle[YAW];
 				break;
 
 			case SPIKE_DOWN:
-				pCmd->viewangles[PITCH] = 89;
-				pCmd->viewangles[YAW] = lastAirblastAngle[YAW];
+				cmd.viewangles[PITCH] = 89;
+				cmd.viewangles[YAW] = lastAirblastAngle[YAW];
 				break;
 
 			case SPIKE_LEFT:
-				pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
-				pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
+				cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
+				cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
 				break;
 
 			case SPIKE_RIGHT:
-				pCmd->viewangles[PITCH] = lastAirblastAngle[PITCH];
-				pCmd->viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
+				cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
+				cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
 				break;
 		}
 
-		utils::MovementFix(pCmd, oldAngles);
+		utils::MovementFix(cmd, oldAngles);
 
 		didAirblastLastRound = false;
 		return true;
@@ -82,13 +82,13 @@ bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjecti
 		return false;
 
 	// Not a flamethrower
-	if (strcmp(pWeapon->get_client_class()->name, "CTFFlameThrower") != 0)
+	if (strcmp(pWeapon->GetClientClass()->name, "CTFFlameThrower") != 0)
 		return false;
 
 	// Can't airblast now
 	if (pWeapon->getNextSecondaryAttackTime() > g_pGlobals->curtime)
 	{
-		pCmd->buttons &= ~IN_ATTACK2;
+		cmd.buttons &= ~IN_ATTACK2;
 		return false;
 	}
 
@@ -124,11 +124,11 @@ bool airblast::Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjecti
 	if (pClosestProjectile && closestDistance <= 185)
 	{
 		QAngle angles = utils::CalculateAngle(utils::GetLocalViewOrigin(), closestPredictedCenter);
-		pCmd->viewangles = angles;
-		utils::MovementFix(pCmd, oldAngles);
-		pCmd->buttons |= IN_ATTACK2;
+		cmd->viewangles = angles;
+		utils::MovementFix(cmd, oldAngles);
+		cmd->buttons |= IN_ATTACK2;
 
-		lastAirblastAngle = pCmd->viewangles;
+		lastAirblastAngle = cmd->viewangles;
 		didAirblastLastRound = true;
 
 		return true;

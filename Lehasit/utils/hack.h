@@ -16,9 +16,9 @@ namespace utils
 	void ClampViewAngles(QAngle& angles);
 	//float NormalizeAngle(float angle); // Moved to mathlib.h
 	void NormalizeAngles(QAngle& angles);
-	void MovementFix(CUserCmd* cmd, const QAngle& old_angles);
+	void MovementFix(CUserCmd& cmd, const QAngle& old_angles);
 	Vector GetHitboxCenter(CTFPlayer* player, int hitbox_id);
-	void TraceBullet(CBaseEntity* pLocalPlayer, Vector end, trace_t& out_trace);
+	void TraceBullet(CBaseEntity& localPlayer, Vector end, trace_t& out_trace);
 
 	// TODO: Figure out how to forward declare templates so I don't have to include interfaces
 	// in a header

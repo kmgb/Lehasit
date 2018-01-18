@@ -51,34 +51,34 @@ void utils::NormalizeAngles(QAngle& angles)
 	angles[ROLL] = NormalizeAngle(angles[ROLL]);
 }
 
-void utils::MovementFix(CUserCmd* cmd, const QAngle& oldAngles)
+void utils::MovementFix(CUserCmd& cmd, const QAngle& oldAngles)
 {
-	float newYaw = cmd->viewangles[YAW];
+	float newYaw = cmd.viewangles[YAW];
 	float oldYaw = oldAngles[YAW];
 
 	// The angle of movement relative to viewangles
-	float moveYawRad = atan2(cmd->sidemove, cmd->forwardmove);
+	float moveYawRad = atan2(cmd.sidemove, cmd.forwardmove);
 
 	// Rotate movement yaw by the yaw delta so that movement is
 	// relative to oldYaw instead of newYaw
 	//moveYaw += DegToRad((newYaw + 180.f) - (oldYaw + 180.f));
 	moveYawRad += DegToRad(NormalizeAngle(newYaw - oldYaw));
 
-	float spd = Vector(cmd->forwardmove, cmd->sidemove, 0.f).length2D();
-	cmd->forwardmove = cos(moveYawRad) * spd;
-	cmd->sidemove = sin(moveYawRad) * spd;
+	float spd = Vector(cmd.forwardmove, cmd.sidemove, 0.f).length2D();
+	cmd.forwardmove = cos(moveYawRad) * spd;
+	cmd.sidemove = sin(moveYawRad) * spd;
 
 	// If pitch goes upside down (> 90 or <= -90), forwardmove reverses
 	// meaning, so we have to re-reverse forwardmove
 	//Vector3 viewPunch = *OffsetPointer<Vector3>(GetLocalPlayer(), g_offsets.player_viewPunch);
 
-	float oldPitch = NormalizeAngle(cmd->viewangles[PITCH]);
+	float oldPitch = NormalizeAngle(cmd.viewangles[PITCH]);
 	float newPitch = NormalizeAngle(oldAngles[PITCH]);// +viewPunch[PITCH];
 
 	bool oldBackwards = (oldPitch > 90.f || oldPitch <= -90.f);
 	bool newBackwards = (newPitch > 90.f || newPitch <= -90.f);
 	if (oldBackwards != newBackwards)
-		cmd->forwardmove = -cmd->forwardmove;
+		cmd.forwardmove = -cmd.forwardmove;
 }
 
 Vector utils::GetHitboxCenter(CTFPlayer* player, int hitbox_id)
@@ -124,7 +124,7 @@ public:
 	}
 };
 
-void utils::TraceBullet(CBaseEntity* pLocalPlayer, Vector end, trace_t& out_trace)
+void utils::TraceBullet(CBaseEntity& localPlayer, Vector end, trace_t& out_trace)
 {
 	// TODO: Make into nice std::vector list of skips
 	class CTraceFilterSkip : public ITraceFilter
@@ -150,7 +150,7 @@ void utils::TraceBullet(CBaseEntity* pLocalPlayer, Vector end, trace_t& out_trac
 
 	ray.init(start, end);
 
-	filter.pSkip = pLocalPlayer;
+	filter.pSkip = &localPlayer;
 
 	g_interfaces.trace->traceRay(ray, MASK_SOLID | CONTENTS_HITBOX, &filter, &out_trace);
 }

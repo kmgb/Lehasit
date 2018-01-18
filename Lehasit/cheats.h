@@ -6,16 +6,16 @@ class CUserCmd;
 class CBaseEntity;
 class CTFPlayer;
 
-std::vector<CBaseEntity*> GetDeflectableProjectiles(CTFPlayer* pLocalPlayer);
+std::vector<CBaseEntity*> GetDeflectableProjectiles(CTFPlayer& localPlayer);
 
 namespace airblast
 {
-	bool Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles);
+	bool Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles);
 }
 
 namespace orbit
 {
-	void Run(CUserCmd* pCmd, std::vector<CBaseEntity*> deflectableProjectiles);
+	void Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles);
 }
 
 namespace glow
@@ -25,6 +25,6 @@ namespace glow
 
 namespace prediction
 {
-	void Apply(CUserCmd* pCmd);
+	void Apply(CUserCmd& cmd);
 	void Restore();
 }

@@ -15,13 +15,13 @@ void glow::Run()
 		if (!player)
 			continue;
 
-		bool should_glow = (!player->isDormant() && player->getLifestate() == LIFE_ALIVE);
+		bool should_glow = (!player->IsDormant() && player->getLifestate() == LIFE_ALIVE);
 
 
 		if (g_config.glow_type == 0)
 			should_glow = false;
 		else if (g_config.glow_type == 1)
-			should_glow = should_glow && player->getTeamNum() != local_player->getTeamNum();
+			should_glow = should_glow && player->GetTeamNum() != local_player->GetTeamNum();
 
 		bool* glow_enabled = OffsetPointer<bool>(player, g_offsets.TFPlayer.m_bGlowEnabled);
 

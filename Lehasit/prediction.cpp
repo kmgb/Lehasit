@@ -9,7 +9,7 @@
 
 float oldCurtime, oldFrametime;
 
-void prediction::Apply(CUserCmd* pCmd)
+void prediction::Apply(CUserCmd& cmd)
 {
 	oldCurtime = g_pGlobals->curtime;
 	oldFrametime = g_pGlobals->frametime;
@@ -23,7 +23,7 @@ void prediction::Apply(CUserCmd* pCmd)
 
 	if (g_pMoveHelper)
 	{
-		CUserCmd tempCmd = *pCmd;
+		CUserCmd tempCmd = cmd;
 		tempCmd.buttons &= ~(IN_ATTACK | IN_ATTACK2);
 		int oldFlags = pLocalPlayer->getFlags();
 		g_interfaces.prediction->runCommand(pLocalPlayer, &tempCmd, g_pMoveHelper);

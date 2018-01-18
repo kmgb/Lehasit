@@ -47,13 +47,13 @@ public:
 		typedef void(__thiscall* Fn)(void*, Vector&, Vector&);
 		((Fn)utils::GetVirtualMethod(pRenderable, 20))(pRenderable, mins, maxs);
 	}
-	inline ClientClass* get_client_class()
+	inline ClientClass* GetClientClass()
 	{
 		void* pNetworkable = (char*)this + 8;
 		typedef ClientClass*(__thiscall* Fn)(void*);
 		return ((Fn)utils::GetVirtualMethod(pNetworkable, 2))(pNetworkable);
 	}
-	inline bool isDormant()
+	inline bool IsDormant()
 	{
 		void* pNetworkable = (char*)this + 8;
 		typedef bool(__thiscall* Fn)(void*);
@@ -66,7 +66,7 @@ public:
 		return ((Fn)utils::GetVirtualMethod(pNetworkable, 9))(pNetworkable);
 	}
 
-	inline int getTeamNum()
+	inline int GetTeamNum()
 	{
 		return *OffsetPointer<int>(this, g_offsets.BaseEntity.m_iTeamNum);
 	}
