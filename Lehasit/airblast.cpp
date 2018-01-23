@@ -99,7 +99,7 @@ bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectil
 	if (g_config.airblast_tfdb_lagfix)
 	{
 		auto netinfo = g_interfaces.engine->GetNetChannelInfo();
-		latency = netinfo->GetLatency(MAX_FLOWS); // Get incoming and outgoing latency
+		latency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING); // Get incoming and outgoing latency
 	}
 
 	CBaseEntity* pClosestProjectile{};

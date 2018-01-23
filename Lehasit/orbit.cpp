@@ -12,7 +12,8 @@ void orbit::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles)
 	if (!g_config.airblast_tfdb_orbit_enable)
 		return;
 
-	float avgLatency = g_interfaces.engine->GetNetChannelInfo()->GetAvgLatency(MAX_FLOWS);
+	auto netinfo = g_interfaces.engine->GetNetChannelInfo();
+	float avgLatency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING);
 	CBaseEntity* pClosestProjectile{};
 	Vector closestPredictedCenter;
 	float closestDistance = -1337.f;
