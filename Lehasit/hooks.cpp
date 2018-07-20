@@ -79,7 +79,7 @@ bool __fastcall New_CreateMove(IClientMode* this_, int edx, float inputSampleTim
 		*OffsetPointer<int>(pLocalPlayer, g_offsets.TFPlayer.m_nForceTauntCam) = 0;
 	}
 
-	if (pLocalPlayer->getLifestate() == LIFE_ALIVE)
+	if (localPlayer.getLifestate() == LIFE_ALIVE)
 	{
 		prediction::Apply(cmd);
 

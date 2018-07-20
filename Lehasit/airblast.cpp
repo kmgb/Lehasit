@@ -23,8 +23,8 @@ enum SpikeType
 
 bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectiles)
 {
-	static QAngle lastAirblastAngle = { 0, 0, 0 };
-	static bool didAirblastLastRound = false;
+	static QAngle lastAirblastAngle = {0, 0, 0};
+	static bool didAirblastLastRun = false;
 
 	if (!g_config.airblast_enable)
 		return false;
@@ -33,41 +33,41 @@ bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectil
 	QAngle oldAngles = cmd.viewangles;
 
 	// Spike if possible, airblast angles will overwrite these ones if needed
-	if (didAirblastLastRound)
+	if (didAirblastLastRun)
 	{
 		switch (g_config.airblast_spike_type)
 		{
-			case SPIKE_NONE:
-				cmd.viewangles = lastAirblastAngle;
-				break;
+		case SPIKE_NONE:
+			cmd.viewangles = lastAirblastAngle;
+			break;
 
-			case SPIKE_MANUAL:
-				break;
+		case SPIKE_MANUAL:
+			break;
 
-			case SPIKE_UP:
-				cmd.viewangles[PITCH] = -89;
-				cmd.viewangles[YAW] = lastAirblastAngle[YAW];
-				break;
+		case SPIKE_UP:
+			cmd.viewangles[PITCH] = -89;
+			cmd.viewangles[YAW] = lastAirblastAngle[YAW];
+			break;
 
-			case SPIKE_DOWN:
-				cmd.viewangles[PITCH] = 89;
-				cmd.viewangles[YAW] = lastAirblastAngle[YAW];
-				break;
+		case SPIKE_DOWN:
+			cmd.viewangles[PITCH] = 89;
+			cmd.viewangles[YAW] = lastAirblastAngle[YAW];
+			break;
 
-			case SPIKE_LEFT:
-				cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
-				cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
-				break;
+		case SPIKE_LEFT:
+			cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
+			cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] + 90.f);
+			break;
 
-			case SPIKE_RIGHT:
-				cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
-				cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
-				break;
+		case SPIKE_RIGHT:
+			cmd.viewangles[PITCH] = lastAirblastAngle[PITCH];
+			cmd.viewangles[YAW] = NormalizeAngle(lastAirblastAngle[YAW] - 90.f);
+			break;
 		}
 
 		utils::MovementFix(cmd, oldAngles);
 
-		didAirblastLastRound = false;
+		didAirblastLastRun = false;
 		return true;
 	}
 
@@ -99,16 +99,22 @@ bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectil
 	if (g_config.airblast_tfdb_lagfix)
 	{
 		auto netinfo = g_interfaces.engine->GetNetChannelInfo();
-		latency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING); // Get incoming and outgoing latency
+		latency = netinfo->GetLatency(FLOW_INCOMING) + netinfo->GetLatency(FLOW_OUTGOING); // Get round trip time
 	}
 
-	CBaseEntity* pClosestProjectile{};
+	CBaseEntity* pClosestProjectile {};
 	Vector closestPredictedCenter;
 	float closestDistance = -1337.f;
 	for (CBaseEntity* pProjectile : deflectableProjectiles)
 	{
+		Vector estvel;
+		pProjectile->EstimateAbsVelocity(estvel);
+		float speed = estvel.length();
+
+		// The tfdodgeballs face the way they're going, no need to estimate direction, just speed
 		Vector vel;
-		pProjectile->EstimateAbsVelocity(vel);
+		AngleVectors(pProjectile->getAngles(), vel);
+		vel *= speed;
 
 		Vector predictpos = pProjectile->GetWorldSpaceCenter() + (vel * latency);
 		float dist = (utils::GetLocalViewOrigin() - predictpos).length();
@@ -129,7 +135,7 @@ bool airblast::Run(CUserCmd& cmd, std::vector<CBaseEntity*> deflectableProjectil
 		cmd.buttons |= IN_ATTACK2;
 
 		lastAirblastAngle = cmd.viewangles;
-		didAirblastLastRound = true;
+		didAirblastLastRun = true;
 
 		return true;
 	}

@@ -6,8 +6,8 @@
 #include "QAngle.h"
 
 #define M_PI 3.14159265358979323846f
-#define DEG2RAD(x) ((float)(x) * (M_PI / 180.f))
-#define RAD2DEG(x) ((float)(x) * (180.f / M_PI))
+//#define DEG2RAD(x) ((float)(x) * (M_PI / 180.f))
+//#define RAD2DEG(x) ((float)(x) * (180.f / M_PI))
 
 using matrix3x4_t = float[3][4];
 
@@ -28,6 +28,11 @@ inline float RadToDeg(float f)
 	return f * (180.f / PI);
 }
 
+void inline SinCos(float radians, float& sine, float& cosine)
+{
+	sine = sinf(radians);
+	cosine = cosf(radians);
+}
 /*void inline SinCos(float radians, float& sine, float& cosine) {
 	sine = sinf(radians);
 	cosine = cosf(radians);
@@ -71,3 +76,4 @@ void AngleVectors(const QAngle& angles, Vector* forward, Vector* right, Vector* 
 }*/
 
 void VectorAngles(const Vector& forward, QAngle& angles);
+void AngleVectors(const QAngle& angles, Vector& forward);

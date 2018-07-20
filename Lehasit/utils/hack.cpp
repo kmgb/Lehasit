@@ -15,8 +15,8 @@ QAngle utils::CalculateAngle(Vector start, Vector end)
 	QAngle ang;
 	Vector delta = start - end;
 
-	ang[PITCH] = RAD2DEG(asinf(delta.z / delta.length()));
-	ang[YAW] = RAD2DEG(atan2f(delta.y, delta.x)) - 180.f; // 0..360 -> -180..180
+	ang[PITCH] = RadToDeg(asinf(delta.z / delta.length()));
+	ang[YAW] = RadToDeg(atan2f(delta.y, delta.x)) - 180.f; // 0..360 -> -180..180
 	ang[ROLL] = 0.f;
 
 	return ang;
